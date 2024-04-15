@@ -4,6 +4,7 @@ package com.library.auth.controller;
 import com.library.auth.dto.LoginDto;
 import com.library.auth.dto.LoginResponse;
 import com.library.auth.dto.RegistrationDto;
+import com.library.auth.entity.CustomUserDetail;
 import com.library.auth.entity.User;
 import com.library.auth.security.JwtTokenUtil;
 import com.library.auth.service.UserService;
@@ -100,9 +101,8 @@ public class AuthController {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String refreshToken = authorizationHeader.substring("Bearer ".length());
             if (jwtTokenUtil.validate(refreshToken)) {
-                org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User)
-                        userService.loadUserByUsername(jwtTokenUtil.getUserName(refreshToken));
-                User user = userService.getByUsername(userDetails.getUsername());
+                CustomUserDetail customUserDetail = userService.loadUserByUsername(jwtTokenUtil.getUserName(refreshToken));
+                User user = userService.getByUsername(customUserDetail.getUsername());
 
                 String accessToken = jwtTokenUtil.generateAccessToken(user);
 

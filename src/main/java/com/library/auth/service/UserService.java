@@ -1,6 +1,7 @@
 package com.library.auth.service;
 
 import com.library.auth.dto.RegistrationDto;
+import com.library.auth.entity.CustomUserDetail;
 import com.library.auth.entity.Role;
 import com.library.auth.entity.User;
 import com.library.auth.repository.UserRepository;
@@ -8,7 +9,6 @@ import com.library.dto.ResponseCase;
 import com.library.dto.ServerResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
     private  PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = getByUsername(username);
 
         if (user == null) {
@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(user.getRole()));
 
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+            return new CustomUserDetail(user.getUsername(), user.getPassword(), user.getEmployeeId(), user.getEmployeeId(), user.getCode(), authorities);
         }
     }
 

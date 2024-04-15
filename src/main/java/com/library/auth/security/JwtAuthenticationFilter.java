@@ -1,5 +1,6 @@
 package com.library.auth.security;
 
+import com.library.auth.entity.CustomUserDetail;
 import com.library.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -49,12 +50,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        UserDetails userDetails = userService.loadUserByUsername(jwtTokenUtil.getUserName(token));
+        CustomUserDetail customUserDetail = userService.loadUserByUsername(jwtTokenUtil.getUserName(token));
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
+                customUserDetail,
                 null,
-                Optional.ofNullable(userDetails).map(UserDetails::getAuthorities).orElse(List.of())
+                Optional.ofNullable(customUserDetail).map(UserDetails::getAuthorities).orElse(List.of())
         );
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
