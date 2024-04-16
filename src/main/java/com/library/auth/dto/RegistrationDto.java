@@ -16,7 +16,9 @@ public final class RegistrationDto {
     private  String username;
     private  String password;
     private  Long employeeId;
+    private  Long studentId;
     private  String role;
+    private String code;
 
 
     RegistrationDto(Long id, String username, String password, Long employeeId, String role) {

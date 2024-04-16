@@ -5,12 +5,16 @@ import com.library.auth.dto.LoginDto;
 import com.library.auth.dto.LoginResponse;
 import com.library.auth.dto.RegistrationDto;
 import com.library.auth.entity.CustomUserDetail;
+import com.library.auth.entity.Role;
 import com.library.auth.entity.User;
 import com.library.auth.security.JwtTokenUtil;
+import com.library.auth.service.CreatorService;
 import com.library.auth.service.UserService;
 import com.library.dto.ServerResponseDto;
 import com.library.entity.manager.EmployeeEntity;
+import com.library.entity.student.StudentEntity;
 import com.library.repository.EmployeeRepository;
+import com.library.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +44,9 @@ public class AuthController {
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final EmployeeRepository employeeRepository;
+    private final StudentRepository studentRepository;
+
+    private final CreatorService creatorService;
 
     @PostMapping("login")
     public ResponseEntity<ServerResponseDto> login(@RequestBody LoginDto request) {
@@ -48,7 +55,6 @@ public class AuthController {
 
         if (username.equals("admin") && password.equals("admin")) {
             User admin = userService.getByUsername("admin");
-            userService.create(RegistrationDto.fromUser(admin));
             String accessToken = jwtTokenUtil.generateAccessToken(admin);
             String refreshToken = jwtTokenUtil.generateRefreshToken(admin);
             LoginResponse response = new LoginResponse();
@@ -75,20 +81,32 @@ public class AuthController {
         String refreshToken = jwtTokenUtil.generateRefreshToken(user);
 
         Long employeeId = user.getEmployeeId();
+        Long studentId = user.getStudentId();
 
-        Optional<EmployeeEntity> employee = employeeRepository.findById(employeeId);
-        if (employee.isEmpty()) {
-            return ResponseEntity.ok(ServerResponseDto.ERROR);
-        }
-
-        String name = employee.get().getName();
+        String name = "";
         String role = user.getRole();
+
+        if (Role.EMPLOYEE.equals(role)) {
+            Optional<EmployeeEntity> employee = employeeRepository.findById(employeeId);
+            if (employee.isEmpty()) {
+                return ResponseEntity.ok(ServerResponseDto.ERROR);
+            }
+            name = employee.get().getName();
+        } else if (Role.STUDENT.equals(role)) {
+            Optional<StudentEntity> student = studentRepository.findById(studentId);
+            if (student.isEmpty()) {
+                return ResponseEntity.ok(ServerResponseDto.ERROR);
+            }
+            name = student.get().getName();
+        }
 
         LoginResponse response = new LoginResponse();
         response.setEmployeeId(employeeId);
+        response.setStudentId(studentId);
         response.setUsername(user.getUsername());
         response.setName(name);
         response.setRole(role);
+        response.setCode(user.getCode());
         response.setAccessToken(accessToken);
         response.setRefreshToken(refreshToken);
 
@@ -118,7 +136,7 @@ public class AuthController {
 
     @PostMapping("register")
     public ResponseEntity<ServerResponseDto> register(@RequestBody RegistrationDto request) {
-        return ResponseEntity.ok(userService.create(request));
+        return ResponseEntity.ok(creatorService.create(request));
     }
 
     @PostMapping("/logout")

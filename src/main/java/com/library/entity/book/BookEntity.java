@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="student")
+@Table(name="book")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

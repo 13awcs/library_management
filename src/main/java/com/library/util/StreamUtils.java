@@ -1,7 +1,5 @@
 package com.library.util;
 
-import com.google.common.collect.Maps;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -105,14 +103,6 @@ public class StreamUtils {
             consumer.accept(t);
             return t;
         };
-    }
-
-    public static <K, V, K1, V1> Map<K1, V1> transformMap(Map<K, V> map,
-                                                          Function<K, K1> functionKey,
-                                                          Function<V, V1> functionValue) {
-        Map<K1, V1> mapResult = Maps.newHashMapWithExpectedSize(map.size());
-        map.forEach((key, value) -> mapResult.put(functionKey.apply(key), functionValue.apply(value)));
-        return mapResult;
     }
 
 }

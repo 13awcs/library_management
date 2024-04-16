@@ -25,8 +25,10 @@ public class BorrowedBookEntity extends BaseEntity {
     private Long employeeId;
     private Long bookId;
     private Date borrowDate;
-    private int withinBorrowDay;
+    private Date dueDate;
     private int renewTime;
+
+    @Enumerated(EnumType.STRING)
     private BorrowStatus borrowStatus;
 
     private boolean isAcceptedByLibrarian;

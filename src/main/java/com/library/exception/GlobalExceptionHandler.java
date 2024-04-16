@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 "Not found",
                 details);
-        return com.coffe_management_system.exception.ResponseEntityBuilder.build(err);
+        return com.library.exception.ResponseEntityBuilder.build(err);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 "Bad request",
                 details);
-        return com.coffe_management_system.exception.ResponseEntityBuilder.build(err);
+        return com.library.exception.ResponseEntityBuilder.build(err);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Type Mismatch",
                 details);
 
-        return com.coffe_management_system.exception.ResponseEntityBuilder.build(err);
+        return com.library.exception.ResponseEntityBuilder.build(err);
     }
 
 }

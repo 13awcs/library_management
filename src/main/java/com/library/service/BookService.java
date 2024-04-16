@@ -15,4 +15,8 @@ public class BookService {
         return ServerResponseDto.success(bookRepository.findByCategoryAndIsDeletedFalse(category));
     }
 
+    public int getQuantityByBookId(Long bookId) {
+        return bookRepository.getQuantityByBookId(bookId);
+    }
+
 }

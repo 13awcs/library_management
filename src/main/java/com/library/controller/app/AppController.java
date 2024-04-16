@@ -2,6 +2,7 @@ package com.library.controller.app;
 
 import com.library.auth.entity.CustomUserDetail;
 import com.library.dto.ServerResponseDto;
+import com.library.dto.borrow.RegisterBorrowRequest;
 import com.library.service.BookService;
 import com.library.service.BorrowService;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,22 @@ public class AppController {
     private final BorrowService borrowService;
 
     @GetMapping("/list-book")
-    public ResponseEntity<ServerResponseDto> getListBookForApp(String category) {
+    public ResponseEntity<ServerResponseDto> getListBookForApp(@RequestParam String category) {
         return ResponseEntity.ok(bookService.getListBookForApp(category));
     }
 
     @PostMapping("/register-borrow")
-    public ResponseEntity<ServerResponseDto> registerBorrow(@AuthenticationPrincipal CustomUserDetail customUserDetail) {
+    public ResponseEntity<ServerResponseDto> registerBorrow(@RequestBody RegisterBorrowRequest request,
+                                                            @AuthenticationPrincipal CustomUserDetail customUserDetail) {
         Long studentId = customUserDetail.getStudentId();
-        return ResponseEntity.ok(borrowService.registerBorrow(studentId));
+        return ResponseEntity.ok(borrowService.registerBorrow(request, studentId));
+    }
+
+    @PostMapping("/renew-borrow")
+    public ResponseEntity<ServerResponseDto> renewBorrow(@RequestParam Long bookId,
+                                                         @AuthenticationPrincipal CustomUserDetail customUserDetail) {
+        Long studentId = customUserDetail.getStudentId();
+        return ResponseEntity.ok(borrowService.renewBorrow(bookId, studentId));
     }
 
 }
