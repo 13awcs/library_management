@@ -42,6 +42,7 @@ public class BorrowService {
 
         BorrowedBookEntity borrowedBookFromDb = borrowRepository.findByBookIdAndStudentId(bookId, studentId);
         if (borrowedBookFromDb != null) {
+            borrowedBookFromDb.setBorrowStatus(BorrowStatus.RE_NEW);
             borrowedBookFromDb.setDueDate(DateUtils.plusDayFromDate(7, borrowedBookFromDb.getDueDate()));
             borrowedBookFromDb.setUpdatedTime(new Date());
             borrowRepository.save(borrowedBookFromDb);
